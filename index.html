@@ -1,0 +1,40 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>Assignment 1 Tessellation and Twist</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-3 bootcards-list">
+          <div class="side-bar">
+            <form>
+              <div class="form-group">
+                <label for="tessellation-level">Level of Tessellation</label>
+                <input type="text" class="form-control" id="tessellation-level" placeholder="5">
+                <p class="help-block">Aka. the number of subdivisions</p>
+              </div>
+              <div class="form-group">
+                <label for="twist-degree">Degrees to twist</label>
+                <input type="text" class="form-control" id="twist-degree" placeholder="90">
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" checked="true" id="whether-animation"> Animation
+                </label>
+              </div>
+              <button type="submit" class="btn btn-default" id="refresh">Refresh</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-sm-9 bootcards-cards">
+          <div id="main"></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="dist/js/app-bundle.js" charset="utf-8"></script>
+  </body>
+
+</html>
