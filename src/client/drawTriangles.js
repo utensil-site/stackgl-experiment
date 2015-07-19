@@ -11,6 +11,7 @@ export default function drawTriangles(domId, config) {
   var shader, vao;
 
   var firstFrame = true;
+  var posOffset = vec2.fromValues(0, 0);
 
   var triangles = divideTriangle(
     vec2.fromValues(-0.7, 0),
@@ -22,11 +23,30 @@ export default function drawTriangles(domId, config) {
     element: 'main'
   });
 
+  function bindKeys() {
+    console.log("Bind keyboard commands");
+    ["move-left", "move-right", "move-up", "move-down"].forEach(function (vk) {
+      shell.unbind(vk);
+    });
+
+    //Bind keyboard commands
+    shell.bind("move-left", "left", "A");
+    shell.bind("move-right", "right", "D");
+    shell.bind("move-up", "up", "W");
+    shell.bind("move-down", "down", "S");
+  }
+
   if(config.lastShell) {
     init();
   }
 
+  bindKeys();
+
   config.lastShell = shell;
+
+  $("#main").click(function () {
+    $('#main').focus();
+  });
 
   function init() {
     var gl = shell.gl;
@@ -49,8 +69,32 @@ export default function drawTriangles(domId, config) {
 
   shell.on('gl-init', init);
 
+  //Fired once per game tick
+  function interact() {
+    if(shell.wasDown("move-left")) {
+      posOffset[0] -= 0.01;
+      console.log(posOffset);
+    }
+    if(shell.wasDown("move-right")) {
+      posOffset[0] += 0.01;
+      console.log(posOffset);
+    }
+    if(shell.wasDown("move-up")) {
+      posOffset[1] += 0.01;
+      console.log(posOffset);
+    }
+    if(shell.wasDown("move-down")) {
+      posOffset[1] -= 0.01;
+      console.log(posOffset);
+    }
+
+    console.log(shell.bindings);
+  }
+
   shell.on('gl-render', function(t) {
     var gl = shell.gl;
+
+    interact();
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
     gl.clearColor(0,0,0,0);
@@ -79,6 +123,7 @@ export default function drawTriangles(domId, config) {
     }
     shader.uniforms.theta = config.degrees / 360.0 * 3.141592653;
     shader.uniforms.omega = 3.141592653 / 9.0;
+    shader.uniforms.posOffset = posOffset;
 
     //Unbind vertex array when fini
     vao.unbind();

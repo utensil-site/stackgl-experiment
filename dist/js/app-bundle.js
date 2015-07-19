@@ -12002,6 +12002,7 @@
 	  var shader, vao;
 
 	  var firstFrame = true;
+	  var posOffset = vec2.fromValues(0, 0);
 
 	  var triangles = divideTriangle(vec2.fromValues(-0.7, 0), vec2.fromValues(0, -0.7), vec2.fromValues(0.7, 0.7), config.level, config.gasket);
 
@@ -12009,11 +12010,30 @@
 	    element: "main"
 	  });
 
+	  function bindKeys() {
+	    console.log("Bind keyboard commands");
+	    ["move-left", "move-right", "move-up", "move-down"].forEach(function (vk) {
+	      shell.unbind(vk);
+	    });
+
+	    //Bind keyboard commands
+	    shell.bind("move-left", "left", "A");
+	    shell.bind("move-right", "right", "D");
+	    shell.bind("move-up", "up", "W");
+	    shell.bind("move-down", "down", "S");
+	  }
+
 	  if (config.lastShell) {
 	    init();
 	  }
 
+	  bindKeys();
+
 	  config.lastShell = shell;
+
+	  $("#main").click(function () {
+	    $("#main").focus();
+	  });
 
 	  function init() {
 	    var gl = shell.gl;
@@ -12032,8 +12052,32 @@
 
 	  shell.on("gl-init", init);
 
+	  //Fired once per game tick
+	  function interact() {
+	    if (shell.wasDown("move-left")) {
+	      posOffset[0] -= 0.01;
+	      console.log(posOffset);
+	    }
+	    if (shell.wasDown("move-right")) {
+	      posOffset[0] += 0.01;
+	      console.log(posOffset);
+	    }
+	    if (shell.wasDown("move-up")) {
+	      posOffset[1] += 0.01;
+	      console.log(posOffset);
+	    }
+	    if (shell.wasDown("move-down")) {
+	      posOffset[1] -= 0.01;
+	      console.log(posOffset);
+	    }
+
+	    console.log(shell.bindings);
+	  }
+
 	  shell.on("gl-render", function (t) {
 	    var gl = shell.gl;
+
+	    interact();
 
 	    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 	    gl.clearColor(0, 0, 0, 0);
@@ -12062,6 +12106,7 @@
 	    }
 	    shader.uniforms.theta = config.degrees / 360 * 3.141592653;
 	    shader.uniforms.omega = 3.141592653 / 9;
+	    shader.uniforms.posOffset = posOffset;
 
 	    //Unbind vertex array when fini
 	    vao.unbind();
@@ -12074,7 +12119,7 @@
 /* 99 */
 /***/ function(module, exports) {
 
-	module.exports = "precision highp float;\nattribute vec3 position;\nuniform float theta;\nuniform float omega;\nuniform float t;\nvarying vec2 uv;\nvoid main() {\n  vec4 pos = vec4(position, 1.0);\n  float x = pos.x;\n  float y = pos.y;\n  float d = sqrt(pow(x, 2.0) + pow(y, 2.0));\n  float angle = (theta + omega * t) * d;\n  pos.x = x * cos(angle) - y * sin(angle);\n  pos.y = x * sin(angle) + y * cos(angle);\n  gl_Position = pos;\n  uv = position.xy;\n}\n"
+	module.exports = "precision highp float;\nattribute vec3 position;\nuniform float theta;\nuniform float omega;\nuniform float t;\nuniform vec2 posOffset;\n\nvarying vec2 uv;\nvoid main() {\n  vec4 pos = vec4(position, 1.0);\n  float x = pos.x + posOffset.x;\n  float y = pos.y + posOffset.y;\n  float d = sqrt(pow(x, 2.0) + pow(y, 2.0));\n  float angle = (theta + omega * t) * d;\n  pos.x = x * cos(angle) - y * sin(angle);\n  pos.y = x * sin(angle) + y * cos(angle);\n  gl_Position = pos;\n  uv = position.xy;\n}\n"
 
 /***/ },
 /* 100 */
