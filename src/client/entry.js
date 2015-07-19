@@ -22,27 +22,29 @@ var config = {
   gasket: false
 };
 
-drawTriangles('main', config);
+$(document).ready(function () {
+  drawTriangles('main', config);
 
-$('#refresh').click(function () {
-  var level = $('#tessellation-level').val();
-  var degrees = $('#twist-degree').val();
+  $('#refresh').click(function () {
+    var level = $('#tessellation-level').val();
+    var degrees = $('#twist-degree').val();
 
-  config.level = /\d+/.test(level) ? parseInt(level) : 5;
-  config.degrees = /\d+/.test(degrees) ? parseInt(degrees) : 90;
-  config.animation = $('#whether-animation').is(':checked') == true;
-  config.wireframe = $('#whether-wireframe').is(':checked') == true;
-  config.gasket = $('#whether-gasket').is(':checked') == true;
+    config.level = /\d+/.test(level) ? parseInt(level) : 5;
+    config.degrees = /\d+/.test(degrees) ? parseInt(degrees) : 90;
+    config.animation = $('#whether-animation').is(':checked') == true;
+    config.wireframe = $('#whether-wireframe').is(':checked') == true;
+    config.gasket = $('#whether-gasket').is(':checked') == true;
 
-  // console.log($('#whether-animation').attr('checked'));
+    // console.log($('#whether-animation').attr('checked'));
 
-  try {
-    drawTriangles('main', config);
-  } catch (e) {
-    console.error(e);
-  } finally {
+    try {
+      drawTriangles('main', config);
+    } catch (e) {
+      console.error(e);
+    } finally {
 
-  }
+    }
 
-  return false;
+    return false;
+  });
 });

@@ -13,9 +13,9 @@ export default function drawTriangles(domId, config) {
   var firstFrame = true;
 
   var triangles = divideTriangle(
-    vec2.fromValues(-0.5, 0),
-    vec2.fromValues(0, -0.5),
-    vec2.fromValues(0.5, 0.5),
+    vec2.fromValues(-0.7, 0),
+    vec2.fromValues(0, -0.7),
+    vec2.fromValues(0.7, 0.7),
     config.level, config.gasket);
 
   var shell = config.lastShell ? config.lastShell : glNow({
