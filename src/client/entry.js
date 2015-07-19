@@ -17,7 +17,9 @@ var drawTriangles = require('./drawTriangles');
 var config = {
   level: 5,
   degrees: 90,
-  animation: true
+  animation: true,
+  wireframe: true,
+  gasket: false
 };
 
 drawTriangles('main', config);
@@ -29,6 +31,8 @@ $('#refresh').click(function () {
   config.level = /\d+/.test(level) ? parseInt(level) : 5;
   config.degrees = /\d+/.test(degrees) ? parseInt(degrees) : 90;
   config.animation = $('#whether-animation').is(':checked') == true;
+  config.wireframe = $('#whether-wireframe').is(':checked') == true;
+  config.gasket = $('#whether-gasket').is(':checked') == true;
 
   console.log($('#whether-animation').attr('checked'));
 

@@ -6,20 +6,7 @@ var createBuffer = require("gl-buffer");
 var createVAO = require("gl-vao");
 var divideTriangle = require('./divideTriangle');
 
-var lastShell = null;
-
 export default function drawTriangles(domId, config) {
-
-  if(lastShell) {
-    lastShell.paused = true;
-    $('#main').empty();
-  }
-
-  var shell = glNow({
-    element: 'main'
-  });
-
-  lastShell = shell;
 
   var shader, vao;
 
@@ -27,9 +14,19 @@ export default function drawTriangles(domId, config) {
     vec2.fromValues(-0.5, 0),
     vec2.fromValues(0, -0.5),
     vec2.fromValues(0.5, 0.5),
-    config.level);
+    config.level, config.gasket);
 
-  shell.on('gl-init', function() {
+  var shell = config.lastShell ? config.lastShell : glNow({
+    element: 'main'
+  });
+
+  if(config.lastShell) {
+    init();
+  }
+
+  config.lastShell = shell;
+
+  function init() {
     var gl = shell.gl;
 
     //Create shader
@@ -46,22 +43,37 @@ export default function drawTriangles(domId, config) {
         "size": 2
       }
     ]);
+  }
 
-  });
+  shell.on('gl-init', init);
 
   shell.on('gl-render', function(t) {
     var gl = shell.gl;
+
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    gl.clearColor(0,0,0,0);
+    gl.clearDepth(1.0);
+    gl.clearStencil(0);
 
     //Bind shader
     shader.bind();
 
     //Bind vertex array object and draw it
-    vao.bind()
-    vao.draw(gl.TRIANGLES, triangles.length / 2);
+    vao.bind();
+
+    if(config.wireframe) {
+      for (var i = 0; i < triangles.length; i += 3) {
+        vao.draw(gl.LINE_LOOP, 3, i);
+      }
+    } else {
+      vao.draw(gl.TRIANGLES, triangles.length / 2);
+    }
 
     //Set uniforms
     if(config.animation) {
       shader.uniforms.t += 0.01;
+    } else {
+      shader.uniforms.t = 0.0;
     }
     shader.uniforms.theta = config.degrees / 360.0 * 3.141592653;
     shader.uniforms.omega = 3.141592653 / 9.0;

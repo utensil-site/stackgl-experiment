@@ -9,7 +9,7 @@ function triangle(a, b, c) {
   return ret;
 }
 
-function divideTriangle(a, b, c, count) {
+function divideTriangle(a, b, c, count, gasket) {
 
   //console.log('divideTriangle', a, b, c, count);
 
@@ -25,12 +25,13 @@ function divideTriangle(a, b, c, count) {
 
       --count;
 
+      var centerTriangle = gasket ? [] : divideTriangle(ac, bc, ab, count, gasket);
+
       // three new triangles
-      return [].concat(
-        divideTriangle(a, ab, ac, count),
-        divideTriangle(c, ac, bc, count),
-        divideTriangle(b, bc, ab, count),
-        divideTriangle(ac, bc, ab, count)
+      return centerTriangle.concat(
+        divideTriangle(a, ab, ac, count, gasket),
+        divideTriangle(c, ac, bc, count, gasket),
+        divideTriangle(b, bc, ab, count, gasket)
       );
   }
 }
