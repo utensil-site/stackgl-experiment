@@ -34,7 +34,7 @@ $('#refresh').click(function () {
   config.wireframe = $('#whether-wireframe').is(':checked') == true;
   config.gasket = $('#whether-gasket').is(':checked') == true;
 
-  console.log($('#whether-animation').attr('checked'));
+  // console.log($('#whether-animation').attr('checked'));
 
   try {
     drawTriangles('main', config);

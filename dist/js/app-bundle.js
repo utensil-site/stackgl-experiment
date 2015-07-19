@@ -82,7 +82,7 @@
 	  config.wireframe = $("#whether-wireframe").is(":checked") == true;
 	  config.gasket = $("#whether-gasket").is(":checked") == true;
 
-	  console.log($("#whether-animation").attr("checked"));
+	  // console.log($('#whether-animation').attr('checked'));
 
 	  try {
 	    drawTriangles("main", config);
@@ -12043,7 +12043,7 @@
 	    vao.bind();
 
 	    if (config.wireframe) {
-	      for (var i = 0; i < triangles.length; i += 3) {
+	      for (var i = 0; i < triangles.length / 2; i += 3) {
 	        vao.draw(gl.LINE_LOOP, 3, i);
 	      }
 	    } else {
