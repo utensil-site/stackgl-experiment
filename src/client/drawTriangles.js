@@ -10,6 +10,8 @@ export default function drawTriangles(domId, config) {
 
   var shader, vao;
 
+  var firstFrame = true;
+
   var triangles = divideTriangle(
     vec2.fromValues(-0.5, 0),
     vec2.fromValues(0, -0.5),
@@ -70,7 +72,7 @@ export default function drawTriangles(domId, config) {
     }
 
     //Set uniforms
-    if(config.animation) {
+    if(config.animation && !firstFrame) {
       shader.uniforms.t += 0.01;
     } else {
       shader.uniforms.t = 0.0;
@@ -80,5 +82,7 @@ export default function drawTriangles(domId, config) {
 
     //Unbind vertex array when fini
     vao.unbind();
+
+    firstFrame = false;
   });
 }
